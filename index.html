@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>EbayAI</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="main.css">
+</head>
+<body>
+    <h1>EbayAI</h1>
+    <form id="search_form">
+        <label for="q">Ebay-link:</label><br>
+        <textarea id="q" name="q" rows="4" cols="70"></textarea><br><br>
+        <label for="goal_condition">Beschreiben sie den gewünschten Zustand kurz und präzise:</label><br>
+        <textarea id="goal_condition" name="goal_condition" rows="4" cols="50"></textarea><br><br>
+        <input type="submit" value="Suchen">
+    </form><br>
+    <input id="sort" type="checkbox" onchange="sort(this.checked)">Unpassende entfernen</input>
+    <br><br>
+    <div id="container"></div>
+
+    <script>
+        const form = document.getElementById("search_form");
+        const container = $("#container");
+        form.onsubmit = function(event) {
+            var data = Object.fromEntries(new FormData(form));
+            var body = { goal_condition: data.goal_condition, query: data.q };
+            fetch('/search', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json, text/plain, */*',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            }).then(res => res.text()).then(res => container.html(res))
+            .then(res => sort(document.getElementById('sort').checked));
+            return false;
+        }
+
+        function sort(hide) {
+            for(const node of document.getElementById("container").children) {
+                console.log(node.className);
+                if (node.className === 'product NEIN' && hide === true) {
+                    node.style.display = 'none';
+                } else {
+                    node.style.display = 'initial';
+                }
+            }
+        }
+    </script>
+</body>
+</html>

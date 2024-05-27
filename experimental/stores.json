@@ -1,0 +1,60 @@
+{
+  "de": {
+    "ebay": {
+      "main_link": "https://www.ebay.de/sch/i.html?&_sop=15",
+      "p_ref": {
+        "by": "class",
+        "name": "s-item__link",
+        "post_p": "eval_foreach",
+        "script": "l.split('?')[0]"
+      },
+      "filters": {
+        "q": {
+          "text": "&_nkw=$v",
+          "type": "eval",
+          "script": "v.replace(' ', '%20')"
+        },
+        "sell_type": {
+          "text": "&LH_$v=1",
+          "type": "dict",
+          "dict": {
+            "sale": "BIN",
+            "auction": "Auction",
+            "all": "All"
+          }
+        }
+      },
+      "condition": {
+        "verify": "read",
+        "prompt": "Check if the title and description of a product a user gives matches the following description:\n\n$goal_cond\n\nAnswer with yes, no or if information is missing answer with 'unknown'. Single word answers only.",
+        "by": "class",
+        "name": "x-item-condition-text",
+        "post_p": "eval",
+        "script": "t.find('div').find('span').find('span').find('span').get_text()"
+      },
+      "p_params": {
+        "title": {
+          "by": "class",
+          "name": "ux-textspans ux-textspans--BOLD"
+        },
+        "price": {
+          "by": "class",
+          "name": "x-price-primary",
+          "post_p": "eval",
+          "script": "t.find('span').get_text().split(' ')[1].replace(',', '.')"
+        },
+        "desc": {
+          "by": "id+iframe",
+          "name": "desc_ifr",
+          "iframe_by": "id",
+          "iframe_name": "ds_div"
+        },
+        "img": {
+          "by": "class",
+          "name": "ux-image-magnify__image--original",
+          "name-sec": "img-scale-down"
+        }
+      }
+    }
+  }
+}
